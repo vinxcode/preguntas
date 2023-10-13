@@ -1,10 +1,14 @@
 import { useState } from 'react'
+import { Toaster, toast } from 'sonner'
+
 
 function App() {
 
   const [numeroPregunta, setNumeroPregunta] = useState(0)
   const [comenzarIntento, setComenzarIntento] = useState(false)
   const [terminarIntento, setTerminarIntento] = useState(false)
+  const [opcionSeleccionada, setOpcionSeleccionada] = useState("")
+  const [puntaje, setPuntaje] = useState(0)
 
   const preguntasBiblia = [
     {
@@ -24,11 +28,24 @@ function App() {
     },
   ];
 
-  const handleNext = () => {
+  const handleOptionChange = (e) => {
+    setOpcionSeleccionada(e.target.value)
+  }
+
+  const handleNext = (e) => {
+    e.preventDefault()
     if (numeroPregunta === (preguntasBiblia.length - 1)) {
       setTerminarIntento(true);
     } else {
-      setNumeroPregunta(numeroPregunta + 1);
+      if (opcionSeleccionada) {
+        if(parseInt(opcionSeleccionada) === (preguntasBiblia[numeroPregunta].respuestaCorrecta +1)){
+          setPuntaje(puntaje +1)
+          alert(puntaje)
+        }
+        setNumeroPregunta(numeroPregunta + 1);
+      } else {
+        toast.error('Debes marcar una opcion')
+      }
     }
 
   }
@@ -43,15 +60,37 @@ function App() {
             <p>Intento terminado</p>
 
           ) : (
-            <div className='container bg-gray-100 p-6 rounded-3xl w-[450px] flex
-                flex-col gap-2'>
-              <h3 className="font-semibold ">{preguntasBiblia[numeroPregunta].pregunta}</h3>
-              <p>{preguntasBiblia[numeroPregunta].opciones[0]}</p>
-              <p>{preguntasBiblia[numeroPregunta].opciones[1]}</p>
-              <p>{preguntasBiblia[numeroPregunta].opciones[2]}</p>
-              <button className='mt-2 bg-indigo-600 text-white h-10 w-full rounded-3xl
-          hover:bg-indigo-300' onClick={handleNext}>Siguiente pregunta</button>
-            </div>
+            <form className='flex flex-col items-start w-[400px]'>
+
+              <fieldset>
+                <legend className='text-lg font-semibold'>{preguntasBiblia[numeroPregunta].pregunta}</legend>
+                <div className="flex gap-2">
+                  <input type="radio" name='opcion' value="1" id='op1'
+                    checked={opcionSeleccionada === '1'}
+                    onChange={handleOptionChange} />
+                  <label htmlFor="op1">{preguntasBiblia[numeroPregunta].opciones[0]}</label>
+                </div>
+
+                <div className="flex gap-2">
+                  <input type="radio" name='opcion' value="2" id='op2'
+                    checked={opcionSeleccionada === '2'}
+                    onChange={handleOptionChange} />
+                  <label htmlFor="op2">{preguntasBiblia[numeroPregunta].opciones[1]}</label>
+                </div>
+
+                <div className="flex gap-2">
+                  <input type="radio" name='opcion' value="3" id='op3'
+                    checked={opcionSeleccionada === '3'}
+                    onChange={handleOptionChange} />
+                  <label htmlFor="op3">{preguntasBiblia[numeroPregunta].opciones[2]}</label>
+                </div>
+
+                <input type="submit" value="Siguiente pregunta" className='mt-2 bg-indigo-600
+               text-white h-10 w-full rounded-3xl hover:bg-indigo-300' onClick={handleNext} />
+
+                <Toaster position='top-center' richColors/>
+              </fieldset>
+            </form>
           )) :
           <div>
             <button className='mt-2 bg-indigo-600 text-white h-10 w-[400px] rounded-3xl
