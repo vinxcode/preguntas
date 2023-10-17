@@ -14,16 +14,21 @@ function App() {
     {
       pregunta: "¿Cuál es el primer libro del Antiguo Testamento de la Biblia?",
       opciones: ["Génesis", "Salmos", "Lucas"],
-      respuestaCorrecta: 0,
+      respuestaCorrecta: 1,
     },
     {
       pregunta: "¿Quién fue el arca de la alianza mencionada en la Biblia?",
       opciones: ["Noé", "Moisés", "David"],
-      respuestaCorrecta: 1,
+      respuestaCorrecta: 2,
     },
     {
       pregunta: "¿Quién escribió la mayoría de los Salmos en la Biblia?",
       opciones: ["Abraham", "Moisés", "David"],
+      respuestaCorrecta: 3,
+    },
+    {
+      pregunta: "¿Quién escribió la minoria de los Proverbios en la Biblia?",
+      opciones: ["Abraham", "Salomon", "David"],
       respuestaCorrecta: 2,
     },
   ];
@@ -34,19 +39,25 @@ function App() {
 
   const handleNext = (e) => {
     e.preventDefault()
-    if (numeroPregunta === (preguntasBiblia.length - 1)) {
-      setTerminarIntento(true);
-    } else {
-      if (opcionSeleccionada) {
-        if(parseInt(opcionSeleccionada) === (preguntasBiblia[numeroPregunta].respuestaCorrecta +1)){
-          setPuntaje(puntaje +1)
-          alert(puntaje)
-        }
-        setNumeroPregunta(numeroPregunta + 1);
+    toast("Boton presionado y funcion cumplida")
+    if (opcionSeleccionada) {
+      if (parseInt(opcionSeleccionada) === (preguntasBiblia[numeroPregunta].respuestaCorrecta)) {
+        setPuntaje(puntaje + 1)
+        toast.success('Sumamos')
       } else {
-        toast.error('Debes marcar una opcion')
+        toast.error("Sin sumar")
       }
+
+      if (numeroPregunta === (preguntasBiblia.length - 1)) {
+        setTerminarIntento(true)
+      } else {
+        setNumeroPregunta(numeroPregunta + 1)
+      }
+    } else {
+      toast.error("Debe elegir una opcion")
     }
+
+
 
   }
 
@@ -57,7 +68,7 @@ function App() {
       {
         comenzarIntento ? (
           terminarIntento ? (
-            <p>Intento terminado</p>
+            <p>Intento terminado <span>{puntaje}</span></p>
 
           ) : (
             <form className='flex flex-col items-start w-[400px]'>
@@ -88,7 +99,7 @@ function App() {
                 <input type="submit" value="Siguiente pregunta" className='mt-2 bg-indigo-600
                text-white h-10 w-full rounded-3xl hover:bg-indigo-300' onClick={handleNext} />
 
-                <Toaster position='top-center' richColors/>
+                <Toaster position='top-center' richColors />
               </fieldset>
             </form>
           )) :
